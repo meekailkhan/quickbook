@@ -9,7 +9,7 @@ func SetupRouter() *gin.Engine {
 	r := gin.Default()
 
 	// v1 := r.Group("/api/v1")
-	r.GET("/test", handlers.TestHandlers)
+	r.GET("/test1", handlers.TestHandlers)
 
 	return r
 }

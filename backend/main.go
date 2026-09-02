@@ -24,6 +24,12 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		panic("could not load the env")
 	}
+	databaseUrl := os.Getenv("ENV_DATABASE_URL")
+	if databaseUrl == "" {
+		log.Fatal("database url not set in env")
+	}
+
+	fmt.Printf("datbase url is: %s\n", databaseUrl)
 
 	router := api.SetupRouter()
 
