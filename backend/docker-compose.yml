@@ -9,14 +9,12 @@ services:
       POSTGRES_PASSWORD: ${ENV_PG_PASSWORD}
       POSTGRES_DB: ${ENV_PG_DATABASE}
     ports:
-      - 5432:${ENG_PG_PORT}
+      - 5432:${ENV_PG_PORT}
     volumes:
       - quickbook_data:/var/lib/postgresql/data
     networks:
       quickbook-net:
         ipv4_address: ${ENV_PG_HOST}
-    
-    
 
 networks:
   quickbook-net:
