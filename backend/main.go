@@ -11,6 +11,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/meekailkhan/quick-book/internals/api"
+	"github.com/meekailkhan/quick-book/util"
 )
 
 const (
@@ -24,12 +25,11 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		panic("could not load the env")
 	}
-	databaseUrl := os.Getenv("ENV_DATABASE_URL")
-	if databaseUrl == "" {
-		log.Fatal("database url not set in env")
+	conn, err := util.ConnectDB()
+	if err != nil {
+		log.Fatalf("Something went wrong %v\n", err)
 	}
-
-	fmt.Printf("datbase url is: %s\n", databaseUrl)
+	conn.Ping() // simulate the use of conn for prevent unused error
 
 	router := api.SetupRouter()
 
