@@ -11,7 +11,7 @@ import (
 
 	"github.com/joho/godotenv"
 	"github.com/meekailkhan/quick-book/internals/api"
-	"github.com/meekailkhan/quick-book/util"
+	"github.com/meekailkhan/quick-book/utils"
 )
 
 const (
@@ -25,11 +25,10 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		panic("could not load the env")
 	}
-	conn, err := util.ConnectDB()
+	_, err := utils.ConnectAndUpDB() // TODO: change the blank return into named return when i will use
 	if err != nil {
-		log.Fatalf("Something went wrong %v\n", err)
+		log.Fatalf("Something went wrong: %v\n", err)
 	}
-	conn.Ping() // simulate the use of conn for prevent unused error
 
 	router := api.SetupRouter()
 
