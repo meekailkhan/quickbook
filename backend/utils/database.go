@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"os"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 )
 
@@ -15,12 +15,13 @@ func ConnectAndUpDB() (*sql.DB, error) {
 	if databaseUrl == "" {
 		return nil, errors.New("Database Url not set in enviourment variable")
 	}
-	conn, err := sql.Open("postgres", databaseUrl)
+	conn, err := sql.Open("pgx", databaseUrl)
 	if err != nil {
 		return nil, err
 	}
 	defer conn.Close()
 	if err := conn.Ping(); err != nil {
+		fmt.Println(err)
 		return nil, errors.New("Failed to reached database and ping it")
 	}
 

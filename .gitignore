@@ -1,3 +1,4 @@
 .env
 tmp/
 quick-book
+backend/db
