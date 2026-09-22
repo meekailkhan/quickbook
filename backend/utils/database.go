@@ -19,22 +19,23 @@ func ConnectAndUpDB() (*sql.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer conn.Close()
 	if err := conn.Ping(); err != nil {
+		conn.Close()
 		fmt.Println(err)
 		return nil, errors.New("Failed to reached database and ping it")
 	}
 
 	if err := goose.SetDialect("postgres"); err != nil {
+		conn.Close()
 		fmt.Printf("set goose dialect: %v\n", err)
 		return nil, errors.New("set goose dialect error")
 	}
 
 	if err := goose.Up(conn, "migrations"); err != nil {
+		conn.Close()
 		fmt.Printf("run migrations: %v\n", err)
 		return nil, errors.New("run migrations error")
 	}
 	fmt.Println("***successfully connected to the db and migrate***")
 	return conn, nil
-
 }

@@ -25,12 +25,14 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		panic("could not load the env")
 	}
-	_, err := utils.ConnectAndUpDB() // TODO: change the blank return into named return when i will use
+
+	conn, err := utils.ConnectAndUpDB()
 	if err != nil {
 		log.Fatalf("Something went wrong: %v\n", err)
 	}
+	defer conn.Close()
 
-	router := api.SetupRouter()
+	router := api.SetupRouter(conn)
 
 	srv := &http.Server{
 		Addr:    PORT,
@@ -48,5 +50,4 @@ func main() {
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGQUIT, syscall.SIGCHLD)
 	val := <-quit
 	fmt.Printf("shuting down server with system call: %d\n", val)
-
 }
