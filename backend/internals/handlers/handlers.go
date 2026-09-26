@@ -19,13 +19,13 @@ func TestHandlers(c *gin.Context) {
 
 // Add new handlers here as the app grows.
 type AppHandlers struct {
-	Inventory *InventoryHandler
+	Inventory *user.InventoryHandler
 }
 
 func NewAppHandlers(db *sql.DB) *AppHandlers {
 	inventoryService := user.NewInventoryService(db)
 
 	return &AppHandlers{
-		Inventory: NewInventoryHandler(inventoryService),
+		Inventory: user.NewInventoryHandler(inventoryService),
 	}
 }

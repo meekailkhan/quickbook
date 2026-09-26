@@ -18,11 +18,11 @@ type GetAllInventoriesParams struct {
 
 // InventoryResult wraps the paginated response with metadata.
 type InventoryResult struct {
-	Inventories []db.Inventory `json:"inventories"`
-	Total       int64          `json:"total"`
-	Page        int            `json:"page"`
-	Limit       int            `json:"limit"`
-	TotalPages  int            `json:"total_pages"`
+	Inventories []db.ListInventoriesRow `json:"inventories"`
+	Total       int64                   `json:"total"`
+	Page        int                     `json:"page"`
+	Limit       int                     `json:"limit"`
+	TotalPages  int                     `json:"total_pages"`
 }
 
 // InventoryService handles inventory-related business logic.
@@ -48,40 +48,18 @@ func (s *InventoryService) GetAllInventories(ctx context.Context, params GetAllI
 	limit := int32(defaultLimit)
 
 	var (
-		inventories []db.Inventory
+		inventories []db.ListInventoriesRow
 		total       int64
 		err         error
 	)
 
-	if params.Category != "" {
-		// ── filtered by category ──────────────────────────────────────────────
-		total, err = s.queries.CountInventoriesByCategory(ctx, params.Category)
-		if err != nil {
-			return nil, fmt.Errorf("count inventories by category: %w", err)
-		}
-
-		inventories, err = s.queries.ListInventoriesByCategory(ctx, db.ListInventoriesByCategoryParams{
-			Category: params.Category,
-			Limit:    limit,
-			Offset:   offset,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list inventories by category: %w", err)
-		}
-	} else {
-		// ── no filter ─────────────────────────────────────────────────────────
-		total, err = s.queries.CountInventories(ctx)
-		if err != nil {
-			return nil, fmt.Errorf("count inventories: %w", err)
-		}
-
-		inventories, err = s.queries.ListInventories(ctx, db.ListInventoriesParams{
-			Limit:  limit,
-			Offset: offset,
-		})
-		if err != nil {
-			return nil, fmt.Errorf("list inventories: %w", err)
-		}
+	inventories, err = s.queries.ListInventories(ctx, db.ListInventoriesParams{
+		Category: params.Category,
+		Limit:    limit,
+		Offset:   offset,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list inventories: %w", err)
 	}
 
 	totalPages := int(total) / defaultLimit
