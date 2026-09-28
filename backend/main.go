@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"log"
@@ -8,6 +9,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/joho/godotenv"
 	"github.com/meekailkhan/quick-book/internals/api"
@@ -49,5 +51,13 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGABRT, syscall.SIGQUIT, syscall.SIGCHLD)
 	val := <-quit
+
+	ctx, cancel := context.WithTimeout(
+		context.Background(),
+		5*time.Second,
+	)
+	defer cancel()
+	srv.Shutdown(ctx)
+
 	fmt.Printf("shuting down server with system call: %d\n", val)
 }
